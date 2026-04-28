@@ -1,10 +1,54 @@
+# 🏜️ Perception-Driven Terrain Segmentation for Autonomous Offroad Navigation
+
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/shrav-jally/Perception-Driven-Terrain-Segmentation-for-Autonomous-Offroad-Navigation)
 
-https://deepwiki.com/shrav-jally/Perception-Driven-Terrain-Segmentation-for-Autonomous-Offroad-Navigation 
+Welcome to the **Desert Terrain Navigator**, a real-time semantic segmentation system designed for autonomous off-road vehicles and planetary rovers. This project utilizes a state-of-the-art **DINOv2** backbone coupled with a ConvNeXt head in PyTorch to instantly analyze live camera feeds, categorize terrain elements, and make critical navigation decisions.
 
-Run the following blocks of code in kaggle GPU and use the UI developed to measure the live metrics.
+## 🚀 Key Features
+* **Real-Time Terrain Analysis:** Processes incoming images to generate high-fidelity, color-coded segmentation masks.
+* **Intelligent Obstacle Detection:** Automatically calculates the density of hazards. If Rocks or Logs occupy more than **5%** of the visual field, the system alerts the robot to halt.
+* **Interactive UI:** Built with Gradio, providing a clean, dual-pane dashboard for viewing the original feed alongside the AI's analysis and navigation decision.
+* **Kaggle-Optimized:** Specifically engineered to run smoothly inside Kaggle GPU environments without async loop errors.
 
-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---
+
+## 🎨 Terrain Classification Legend
+
+The model categorizes the environment into 10 distinct classes to guide the autonomous agent. 
+
+| Color | Class | Description / Navigation Impact |
+| :--- | :--- | :--- |
+| ⬛ **Black** | Background | Unclassified areas |
+| 🟩 **Dark Green** | Trees | Major vertical obstacles |
+| 🌲 **Forest Green** | Lush Bushes | Dense vegetation; avoid |
+| 🟨 **Goldenrod** | Dry Grass | Traversable terrain |
+| 🟫 **Saddlebrown** | Dry Bushes | Minor obstacles |
+| ⬜ **Gray** | Clutter | Unknown debris |
+| 🟧 **Orange-Red** | Logs | **HAZARD:** Triggers stop if > 5% |
+| 🟥 **Red** | Rocks | **HAZARD:** Triggers stop if > 5% |
+| 🟨 **Sandybrown** | Landscape | Safe, open traversable ground |
+| 🟦 **Skyblue** | Sky | Non-navigable background |
+
+---
+
+## ⚙️ Architecture & Under the Hood
+
+The segmentation pipeline leverages advanced PyTorch methodologies:
+1. **Normalization:** Input images are resized to `448x224` and standardized using DINOv2 normalization metrics.
+2. **Feature Extraction:** Images are passed through the frozen DINOv2 backbone to extract high-level `x_norm_patchtokens`.
+3. **Classification Head:** The tokens are processed by a ConvNeXt head to generate logits.
+4. **Interpolation:** Results are upscaled back to the original resolution using bilinear interpolation.
+
+---
+
+## 🛠️ How to Run on Kaggle (GPU)
+
+To experience the live metrics and interactive UI, this project is designed to be run in a **Kaggle Notebook** with a GPU accelerator. 
+
+### 1. Environment Setup
+Before initializing the UI, ensure Gradio is properly closed from any previous runs to prevent port conflicts:
+
+```python
 import gradio as gr
 import torch # or import tensorflow as tf
 import numpy as np
@@ -12,13 +56,12 @@ from PIL import Image
 
 # This ensures Gradio can display inside Kaggle
 gr.close_all()
+```
 
------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+### 2. Model & Prediction Logic (`segmentation_training.py`)
+This core script handles the model inference and safety logic.
 
-segmentation_training.py
-
-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
+```python
 def colorize_mask(mask):
     """Converts the 0-9 integer mask into a color image for the UI."""
     color_mask = np.zeros((mask.shape[0], mask.shape[1], 3), dtype=np.uint8)
@@ -65,10 +108,15 @@ def predict_terrain(input_image):
         status = "✅ PATH CLEAR: Safe to proceed."
     
     return colored_mask, status
+```
 
-    ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+### 3. Launching the Interface (`segmentation_testing.py`)
+Run this block to generate the interactive dashboard.
 
-    import gradio as gr
+> **Note:** The `max_threads=1` parameter in the launch function is a specific fix to silence `asyncio` event loop errors commonly experienced in Kaggle notebooks.
+
+```python
+import gradio as gr
 
 # 1. Create a Legend HTML string for the Judge
 legend_html = """
@@ -111,7 +159,4 @@ with gr.Blocks(theme=gr.themes.Soft()) as demo:
 # Fix for the Error: We use max_threads and disable the "queue" if you aren't doing heavy batches
 # This often silences the asyncio event loop errors in Kaggle.
 demo.launch(share=True, max_threads=1)
-
-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-segmentation_testing.py
+```
