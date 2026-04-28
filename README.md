@@ -2,6 +2,8 @@
 
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/shrav-jally/Perception-Driven-Terrain-Segmentation-for-Autonomous-Offroad-Navigation)
 
+https://deepwiki.com/shrav-jally/Perception-Driven-Terrain-Segmentation-for-Autonomous-Offroad-Navigation
+
 Welcome to the **Desert Terrain Navigator**, a real-time semantic segmentation system designed for autonomous off-road vehicles and planetary rovers. This project utilizes a state-of-the-art **DINOv2** backbone coupled with a ConvNeXt head in PyTorch to instantly analyze live camera feeds, categorize terrain elements, and make critical navigation decisions.
 
 ## 🚀 Key Features
