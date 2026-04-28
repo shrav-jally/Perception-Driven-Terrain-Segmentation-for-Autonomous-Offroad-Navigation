@@ -1,4 +1,5 @@
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/shrav-jally/Perception-Driven-Terrain-Segmentation-for-Autonomous-Offroad-Navigation)
+https://deepwiki.com/shrav-jally/Perception-Driven-Terrain-Segmentation-for-Autonomous-Offroad-Navigation 
 
 Run the following blocks of code in kaggle GPU and use the UI developed to measure the live metrics.
 
