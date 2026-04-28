@@ -1,0 +1,18 @@
+download train, test datasets and scripts and put them in project folder and navigate to it on cli and start prompting to train ur model
+we are training a model called DINOv2, specifically the ViT-S/14 version, which was developed by Meta (Facebook) AI
+
+cd C:\Users\jalle\VSC\ANTIGRAVITY\Techtonic\Offroad_Segmentation_Scripts
+
+cd ENV_SETUP
+
+setup_env.bat
+
+python train.py
+
+what i should have done to avoid the slow training instead of 
+
+pip uninstall torch torchvision torchaudio
+
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+
+this installs the GPU version of PyTorch and drops the training time from 15 hours to 10-20 minutes
